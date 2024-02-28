@@ -1,5 +1,6 @@
 from .book import Book
 from datetime import datetime
+from Entity.book import BookStatus
 '''
 A class that defines a model for user in a library and defines a users functionality to perform 
 tasks in a library
@@ -18,10 +19,12 @@ class User(object):
      :<str>:membership -> defines the type of membership user has registered
      :<dict>:checked_out -> defines the rented books, once the user rents a book, the book_id is appended to this dictionary <book_id : datetime>
      '''
-     def __init__(self, username:str, email:str, user_id:int, membership:str):
+     def __init__(self, username:str,password:str, email:str, 
+                  user_id:int, membership:str):
           self.username = username
           self.id = user_id
           self.email = email
+          self.password = password
           self.history = {}
           self.checked_out = {}
           
@@ -37,7 +40,8 @@ class User(object):
      
      #method to take a book from library
      def check_out(self, book:Book):
-          self.checked_out[book.id] = datetime.now()
+          self.checked_out[book.id] = datetime.now()   #adding to checkout list
+          book.status = BookStatus.NOT_AVAILABLE  #setting book status
      
      #method to return a book to the library
      def check_in(self, book:Book):
