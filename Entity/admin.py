@@ -1,4 +1,5 @@
 class Controller:
      pass
 class Admin:
-     pass
+     def __init__(self) -> None:
+          pass

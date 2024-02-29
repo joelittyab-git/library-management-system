@@ -87,6 +87,9 @@ class User(object):
      def get_registered_date(self):
           return self.registered_date
      
+     def get_username(self)->str:
+          return self.username
+     
 
 
  #Class to define membership types

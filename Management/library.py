@@ -11,8 +11,9 @@ class LibraryManager(Library):
           
           #Linear searching users in the list of user registered
           for user in self.registered_users:
-               if(user==username):
-                    username = user
+               user = User(user)
+               if(user.get_username()==username):
+                    username = user.get_username()
                     break
           #The username exists if passed check
           if username is not None:

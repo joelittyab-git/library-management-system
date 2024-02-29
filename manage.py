@@ -27,6 +27,6 @@ print(user2.get_membership())
 
 
 
-# application = ConsoleRunner(LibraryManager())
-# application.start()
+application = ConsoleRunner(LibraryManager())
+application.start()
 
