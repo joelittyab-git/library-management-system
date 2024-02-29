@@ -15,9 +15,10 @@ class User(object):
      :<str>:username -> stores the username of the user
      :<int>:id -> stores the user id of the user
      :<str>:email -> stores the email of the user
-     :<dict>:history -> dictionary that stores the date time as the key and the book as the value
+     :<list:dict>:history -> list that stores book id and date and time the book has been taken { "book_id":..., "datetime":...}
      :<str>:membership -> defines the type of membership user has registered
-     :<dict>:checked_out -> defines the rented books, once the user rents a book, the book_id is appended to this dictionary <book_id : datetime>
+     :<list:dict>:checked_out -> defines the rented books, once the user rents a book, the book_id is appended to this list <book_id : datetime> 
+          { "book_id":..., "datetime":...}
      '''
      def __init__(self, username:str,password:str, email:str, 
                   user_id:int, membership:str):
@@ -25,8 +26,8 @@ class User(object):
           self.id = user_id
           self.email = email
           self.password = password
-          self.history = {}
-          self.checked_out = {}
+          self.history = []
+          self.checked_out = []
           
           if(membership==Membership.MONTHLY_MEMBER or membership==Membership.YEARLY_MEMBER or
              membership==Membership.STUDENT_MEMBER):
@@ -36,16 +37,28 @@ class User(object):
           
      #method to add books to the history     
      def add_book_to_history(self, book:Book):
-          self.history[str(datetime.now())] = book
+          # appends a dictionary object into the list
+          self.history.append({
+                    "book_id":book.id,
+                    "datetime":datetime.now()
+               })
      
      #method to take a book from library
      def check_out(self, book:Book):
-          self.checked_out[book.id] = datetime.now()   #adding to checkout list
+          self.checked_out.append({
+               "book_id":book.id,
+               "datetime":datetime.now()
+          })   #adding to checkout list
+          
           book.status = BookStatus.NOT_AVAILABLE  #setting book status
      
      #method to return a book to the library
      def check_in(self, book:Book):
-          self.checked_out.pop(book.id)
+          
+          # linear searches the list and deletes the item from the list
+          for i in range(len(self.checked_out)):
+               if(self.checked_out[i]["book_id"]==book.id):
+                    del self.checked_out[i]
           
 
 
