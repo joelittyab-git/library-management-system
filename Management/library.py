@@ -5,7 +5,7 @@ class LibraryManager(Library):
      def __init__(self) -> None:
           super().__init__()
           
-          
+     # authenticates the user based on username and password credentials
      def authenticate(self,username:str, password:str)->User:
           username = None
           
@@ -19,5 +19,6 @@ class LibraryManager(Library):
                #extracting user from the dictionary
                user = User(self.registered_users[user])
                if password==user.password:
+                    self.validate_membership(user=user)
                     return user    #valid auth
           return None    #invalid auth

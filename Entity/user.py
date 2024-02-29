@@ -1,7 +1,5 @@
 from .book import Book
 from datetime import datetime
-from Entity.book import BookStatus
-from Entity.library  import Library
 '''
 A class that defines a model for user in a library and defines a users functionality to perform 
 tasks in a library
@@ -23,7 +21,8 @@ class User(object):
      <datetime>:registered_date -> defines the date and time the  user has registered or has renewed his membership
      '''
      def __init__(self, username:str,password:str, email:str, 
-                  user_id:int, membership:str, registry_date=datetime.now()):
+                  user_id:int, membership:str = None,
+                  registry_date=datetime.now()):
           self.username = username
           self.id = user_id
           self.email = email
@@ -31,9 +30,11 @@ class User(object):
           self.history = []
           self.checked_out = []
           self.registered_date = registry_date
-          if(membership==Library.Membership.MONTHLY_MEMBER or membership==Library.Membership.YEARLY_MEMBER or
-             membership==Library.Membership.STUDENT_MEMBER):
+          if(membership==Membership.MONTHLY_MEMBER or membership==Membership.YEARLY_MEMBER or
+             membership==Membership.STUDENT_MEMBER):
                self.membership = membership
+          elif(membership is None):
+               self.membership = Membership.INVALID
           else:
                raise Exception("InvalidMembershipError")
           
@@ -51,26 +52,46 @@ class User(object):
                })
      
      #method to take a book from library
-     def check_out(self, book:Book):
-          self.checked_out.append({
-               "book_id":book.id,
-               "datetime":datetime.now()
-          })   #adding to checkout list
+     def check_out(self, *args:Book):
+          for book in args:
+               self.checked_out.append({
+                    "book_id":book.id,
+                    "datetime":datetime.now()
+               })   #adding to checkout list
           
-          book.set_unavailable()  #setting book status
+               book.set_unavailable()  #setting book status
      
      #method to return a book to the library
-     def check_in(self, book:Book):
+     def check_in(self, *args:Book):
           
-          # linear searches the list and deletes the item from the list
-          x = (len(self.checked_out))
-          for i in range(x):
-               if(self.checked_out[i]["book_id"]==book.id):
-                    del self.checked_out[i]  #deletes the book that has been checked in
-                    break
-               
-          book.set_availabale()      #sets the book status back to available
+          for book in args:
+               # linear searches the list and deletes the item from the list
+               x = (len(self.checked_out))
+               for i in range(x):
+                    if(self.checked_out[i]["book_id"]==book.id):
+                         del self.checked_out[i]  #deletes the book that has been checked in
+                         break
+                    
+                    book.set_availabale()      #sets the book status back to available
+     
+     def set_validity(self,is_valid:bool):
+          self.is_valid = is_valid
+          if(is_valid is False):
+               self.membership = Membership.INVALID
+               return
      
      # getters
      def get_membership(self):
           return self.membership
+
+     def get_registered_date(self):
+          return self.registered_date
+     
+
+
+ #Class to define membership types
+class Membership:
+     YEARLY_MEMBER = 'YEAR'
+     MONTHLY_MEMBER = 'MONTH'
+     STUDENT_MEMBER = 'STUDENT'
+     INVALID = 'INVALID'      #Expired membership
