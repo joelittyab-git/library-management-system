@@ -25,6 +25,11 @@ class Book(object):
      def check_out(self):
           self.status = BookStatus.NOT_AVAILABLE
           
+     def set_availabale(self):
+          self.status = BookStatus.AVAILABLE
+     def set_unavailable(self):
+          self.status = BookStatus.NOT_AVAILABLE
+          
      def _validate_genre(self, genre_list:list)->bool:
           #validating genre list for valid genres
           for genre in genre_list:
@@ -34,6 +39,7 @@ class Book(object):
                     raise Exception("InvalidGenreError")
                
           return True
+     
      
      class Genre:
           FICTION = 'FICTION'
