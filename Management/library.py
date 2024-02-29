@@ -1,5 +1,6 @@
 from Entity.user import User
 from Entity.library import Library
+from Entity.book import Book
 
 class LibraryManager(Library):
      def __init__(self) -> None:
@@ -23,3 +24,4 @@ class LibraryManager(Library):
                     self.validate_membership(user=user)
                     return user    #valid auth
           return None    #invalid auth
+     

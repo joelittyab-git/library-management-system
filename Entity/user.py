@@ -58,6 +58,7 @@ class User(object):
                     "book_id":book.id,
                     "datetime":datetime.now()
                })   #adding to checkout list
+               self.add_book_to_history(book)
           
                book.set_unavailable()  #setting book status
      
@@ -80,6 +81,8 @@ class User(object):
                self.membership = Membership.INVALID
                return
      
+     
+     
      # getters
      def get_membership(self):
           return self.membership
@@ -90,11 +93,15 @@ class User(object):
      def get_username(self)->str:
           return self.username
      
+     def get_history(self)->list:
+          return self.history
 
+     def get_checked_out(self)->list:
+          return self.checked_out
 
  #Class to define membership types
 class Membership:
-     YEARLY_MEMBER = 'YEAR'
-     MONTHLY_MEMBER = 'MONTH'
+     YEARLY_MEMBER = 'YEARLY'
+     MONTHLY_MEMBER = 'MONTHLY'
      STUDENT_MEMBER = 'STUDENT'
      INVALID = 'INVALID'      #Expired membership

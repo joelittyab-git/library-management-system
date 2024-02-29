@@ -28,5 +28,7 @@ print(user2.get_membership())
 
 
 application = ConsoleRunner(LibraryManager())
+# application.check_option_validity(10,"Joe")
+application.render_history()
 application.start()
 

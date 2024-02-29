@@ -1,6 +1,7 @@
 from datetime import datetime
 
 class Book(object):
+     
      '''
      :<str>:title -> stores the title of the book
      :<str>:author -> stores the name author of the book
@@ -9,7 +10,6 @@ class Book(object):
      :<str:BookStatus>:status -> status of the book if it is available to lease
      :<list>:genre_list -> stores the list of genres of the book
      '''
-     
      def __init__(self,title:str, author:str, book_id:int, genre_list:list,
                   publish_date:datetime = datetime.now()):
           self.title = title
@@ -55,6 +55,8 @@ class Book(object):
           return self.genre_list
      def get_published(self)->datetime:
           return self.publish_date
+     def get_id(self)->int:
+          return self.id
      
      class Genre:
           FICTION = 'FICTION'
@@ -77,9 +79,10 @@ class Book(object):
 
 class Collection(object):
      def __init__(self,book:Book, count:int, id:int) -> None:
-          self.id = id
+          self.id = id   #book_id = collection*100+0, collection*100+1
           self.books = []
           self.count = count
+          self.append_books(book,count)
      
      def withdraw_book(self)->Book:
           for (book) in self.books:
@@ -87,14 +90,33 @@ class Collection(object):
                if(book.is_available()):return book
           return None    #Returns none if no books are available
      
+     def append_books(self, book:Book, count:int):
+          for i in range(count):
+               b_id = self.id*100+i
+               book = Book(book.title,book.author,b_id, book.genre_list, 
+                    book.publish_date)
+               self.books.append(book)
+     
      def get_title(self):
-          return Book(self.books[0]).get_title()
+          book:Book = self.books[0]
+          return book.get_title()
+     
      def get_author(self)->str:
-          return Book(self.books[0]).get_author()
+          book:Book = self.books[0]
+          return book.get_author()
+     
      def get_genres(self)->list:
-          return Book(self.books[0]).get_genres()
+          book:Book = self.books[0]
+          return book.get_genres()
+     
      def get_published(self)->datetime:
-          return Book(self.books[0]).get_published()
+          book:Book = self.books[0]
+          return book.get_published()
+     
+     def get_books(self)->list:
+          return self.books
+     
+     
      
      #returns the availble books in the current collection
      def get_avaliable(self)->int:
