@@ -1,5 +1,6 @@
 from .book import Book
 from datetime import datetime
+from datetime import timedelta
 '''
 A class that defines a model for user in a library and defines a users functionality to perform 
 tasks in a library
@@ -75,11 +76,30 @@ class User(object):
                     
                     book.set_availabale()      #sets the book status back to available
      
+     #A method to set the validity of a user's membership
      def set_validity(self,is_valid:bool):
           self.is_valid = is_valid
           if(is_valid is False):
                self.membership = Membership.INVALID
                return
+          
+     # returns the (day,month,year) the membership expires
+     def get_membership_expiry(self)->tuple:
+          renewed:datetime = self.registered_date
+          exp:datetime = None
+          
+          #checks the membership type of the user
+          if(self.get_membership()==Membership.YEARLY_MEMBER or 
+             self.get_membership()==Membership.STUDENT_MEMBER):
+               exp:datetime = renewed + timedelta(weeks=52)
+          elif(self.get_membership()==Membership.MONTHLY_MEMBER):
+               exp:datetime = renewed + timedelta(weeks=4)
+          else: return None   #returns None if membership is expired
+          
+          return (exp.day, exp.month, exp.year)
+     
+     
+          
      
      
      

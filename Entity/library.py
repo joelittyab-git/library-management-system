@@ -26,41 +26,27 @@ class Library(object):
           
      # validates a user's membership based on the latest registered date
      def validate_membership(self,user:User):
-          membership_type = user.get_membership()
-          renewed_date = user.get_registered_date()
+          # extracting date time info of the current instance
+          now = datetime.now()          
+          dmy = user.get_membership_expiry()
           
-          # extracting date time infor of the current instance
-          now = datetime.now()
-          cur_month = now.month
-          cur_day = now.day
-          cur_year = now.year
-          
-          now = datetime.now()
-          renewed_month = renewed_date.month
-          renewed_day = renewed_date.day
-          renewed_year = renewed_date.year
-          
-          # conditions to check if set membership validity according to the respective membership type
-          if(membership_type==Library.Membership.STUDENT_MEMBER or
-             membership_type==Library.Membership.YEARLY_MEMBER):
-               if((cur_year>=renewed_year+2) or 
-               (cur_year>renewed_year and cur_month>renewed_month
-                  and cur_day>renewed_day)):
-                    user.set_validity(False)
-                    return
-          elif(membership_type==Library.Membership.MONTHLY_MEMBER):
-               if(cur_month>renewed_month
-                  and cur_day>renewed_day):
-                    user.set_validity(False)
-                    return
-               elif(cur_year>renewed_year and renewed_month!=12):
-                    user.set_validity(False)
-                    return          
-               elif(renewed_month==12 and cur_month>1):
-                    user.set_validity(False)
-                    return
+          #already set expired
+          if(dmy is None):
+               user.set_validity(False)
+               return
+          #checks if its valid
+          else:
+               day = dmy[0]
+               month = dmy[1]
+               year = dmy[2]
                
-          user.set_validity(True)
+               exp = datetime(year,month,day)
+               
+               if(now>exp):
+                    user.set_validity(False)
+               else:
+                    user.set_validity(True)
+               
           
      # returns a dictionary containing the data of the books in the library
      def get_books_data(self)->list:
@@ -79,6 +65,7 @@ class Library(object):
           '''
           books_r = {}
           
+          # traverses the collections list for book data
           for collection in self.collections:
                collection:Collection = (collection)
                books_r[collection.id] = {
@@ -91,6 +78,8 @@ class Library(object):
                }
                
                books:list = collection.get_books()
+               
+               #  adds the id's of the books in the collection of current itteration
                for book in books:
                     book:Book = book
                     books_r[collection.id]["book_id"].append(book.get_id())
@@ -108,15 +97,20 @@ class Library(object):
                     'published':collection.get_published(),
                     'available':collection.get_published()
                }
-          
+     
+     
+     # returns a book for specified id
      def get_book(self, id:int)->Book:
+          
+          # attempts linear search
           for collection in self.collections:
                books:Collection = collection
                for book in books.books:
                     book:Book = book
                     if(book.get_id()==id):
                          return book
-          return None
+          return None    #returns None if attempt failed
+     
      
      # method to return the collection by its id
      def get_collection(self, collection_id:int)->Collection:
@@ -167,6 +161,9 @@ class Library(object):
      def check_out(self, book:Book, user:User):
           book.set_unavailable()
           user.check_out(book)
+     
+     def check_out(self, book_id:int, user:User):
+          pass #TODO
      
      #Class to define membership types
      class Membership:

@@ -78,25 +78,44 @@ class Book(object):
           
 
 class Collection(object):
+     
+     '''
+     :<int>:id -> unique id for the collection
+     :<list>:books -> stores the list of books with unize id's
+     :<int>:count -> stores the number of books registeredk
+     '''
      def __init__(self,book:Book, count:int, id:int) -> None:
           self.id = id   #book_id = collection*100+0, collection*100+1
           self.books = []
           self.count = count
-          self.append_books(book,count)
+          self.register_books(book,count)
      
      def withdraw_book(self)->Book:
           for (book) in self.books:
-               book = Book(book)
+               book:Book = (book)
                if(book.is_available()):return book
           return None    #Returns none if no books are available
      
-     def append_books(self, book:Book, count:int):
+     # A method to create records of registered books
+     def register_books(self, book:Book, count:int):
           for i in range(count):
                b_id = self.id*100+i
                book = Book(book.title,book.author,b_id, book.genre_list, 
                     book.publish_date)
                self.books.append(book)
      
+          
+     #returns the availble books in the current collection
+     def get_avaliable(self)->int:
+          a = 0
+          for (book) in self.books:
+               book:Book = book
+               if book.is_available():
+                    a+=1
+                    
+          return a
+     
+     #getters
      def get_title(self):
           book:Book = self.books[0]
           return book.get_title()
@@ -115,18 +134,7 @@ class Collection(object):
      
      def get_books(self)->list:
           return self.books
-     
-     
-     
-     #returns the availble books in the current collection
-     def get_avaliable(self)->int:
-          a = 0
-          for (book) in self.books:
-               book = Book(book)
-               if book.is_available():
-                    a+=1
-                    
-          return a
+
 
 class BookStatus:
      AVAILABLE = "AVAILABLE"

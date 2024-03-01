@@ -22,7 +22,7 @@ class ConsoleRunner():
           TODO:DEV
           '''
           self.session = User('username', 'kunnuthara',
-                              "email",1000,"YEARLY",datetime.now())
+                              "email",1000,"MONTHLY",datetime.now())
           
           book = Book("Cannon vol1","Joel1", 122,[Book.Genre.ADULT, Book.Genre.ADVENTURE], datetime.now())
           book2 = Book("Joel's Cannon vol2","Joel2", 123,[Book.Genre.COMEDY], datetime.now())
@@ -118,6 +118,7 @@ class ConsoleRunner():
                     "Settings",
                     "History",
                     "Pending Returns",
+                    'Renew Membership',
                     "Go Back",
                     "Logout"
                ])
@@ -126,7 +127,7 @@ class ConsoleRunner():
                option = self.listen_input()
                self.print_divider(200)
                
-               if(self.check_option_validity(5,option)):
+               if(self.check_option_validity(6,option)):
                     break
                print("Invalid Option")
           
@@ -134,6 +135,10 @@ class ConsoleRunner():
                self.render_history()
           elif(option=='3'):
                self.render_pending_returns()
+          elif(option=='4'):
+               self.render_payment()
+          elif(option=='5'):
+               self.render_index()
      
      def render_history(self):
           history = self.library.get_history_for(self.session)   #[(<Book>, checkedout:str),...]
@@ -156,6 +161,20 @@ class ConsoleRunner():
           print("-"*162)
           
           self.render_profile()
+          
+     
+     def render_payment(self):
+          self.print_divider(115)
+          tprint("|Membership-Details|")
+          self.print_divider(115)
+          dmy = self.session.get_membership_expiry()
+          print(f"Membership Type: {self.session.get_membership()}")
+          if dmy is not None:
+               print(f"Membership Exipry: {dmy[0]}-{dmy[1]}-{dmy[2]}")
+          else:
+               print(f"YOUR MEMBERSHIP HAS ALREADY EXPIRED PLEASE RENEW IT.")
+          self.print_divider(115)
+        
         
      def render_pending_returns(self):
           tprint(f"{'History':^100}")
