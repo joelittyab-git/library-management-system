@@ -134,6 +134,9 @@ class Collection(object):
      
      def get_books(self)->list:
           return self.books
+     
+     def get_id(self)->int:
+          return self.id
 
 
 class BookStatus:

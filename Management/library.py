@@ -58,6 +58,54 @@ class LibraryManager(Library):
                
           return True
      
+     # A method to return a base user
      def create_user_prof(self, username:str, password:str,
                membership_type:str,email:str):
           return User(username, password,email,0, membership_type)
+     
+     # def check_out(self, entry:str , user: User):
+          
+     #      b_id = None
+     #      b_name = None
+          
+     #      if(entry.isdigit()):
+     #           num = int(entry)
+     #           b_id = self.get_book(num)
+          
+     #      b_name_list = self.get_books(entry)
+          
+     #      if(len(b_name_list)==0 and b_id is not None):
+     #           return super().
+          
+
+     '''
+     Returns tuple 
+     **(bool, list or Book)
+     >(True, Book)
+     >(False, list)
+     '''
+     def get_all(self, entry:str)->tuple:
+          b_id = None    #Book by id (only 1)
+          b_name = None  #Book by name List
+          
+          if(entry.isdigit()):
+               num = int(entry)
+               b_id = self.get_book(num)
+               
+          b_name = self.get_books(entry)
+          
+          
+          if(len(b_name)==0 and (b_id is not None)):
+               return (True, b_id)
+          elif(len(b_name)==1 and (b_id is None)):
+               return (True, b_name[0])
+          elif(len(b_name)>1 and (b_id is None)):
+               return (False, b_name)
+          elif(len(b_name)>1 and (b_id is not None)):
+               return (False, b_name.append(b_id))
+          else:
+               return (False, None)
+               
+     def withdraw_book(self, book:Book):
+          # TODO:Implementations
+          pass

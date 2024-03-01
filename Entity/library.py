@@ -106,6 +106,24 @@ class Library(object):
                     return user
           return None
      
+     #A method that returns the book by name 
+     def get_books(self, name:str)->list:
+          return_list = []
+          
+          for collect in self.collections:
+               collect:Collection = collect
+               if(collect.get_title().lower().strip()
+                  == name.lower().strip()):
+                    b =  Book(collect.get_title(), collect.get_author(),
+                         collect.get_id(), collect.get_genres(),
+                         collect.get_published())
+                    return_list.append(b)
+                    
+          return return_list
+                    
+     def get_available(self, name:str)->list:
+          pass
+     
      # returns a book for specified id
      def get_book(self, id:int)->Book:
           
@@ -153,6 +171,7 @@ class Library(object):
           pending = user.get_checked_out()
           return_list = []
           
+          #loop to create a pending list
           for item in pending:
                book_id = item["book_id"]
                check_out = str(item["datetime"])
@@ -160,9 +179,7 @@ class Library(object):
                return_list.append((book,check_out))
                
           return return_list
-          
-          #loop to create a pending list
-          
+                  
                
      # Checks out a specific book present in the library
      def check_out(self, book:Book, user:User):
