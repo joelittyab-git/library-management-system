@@ -21,8 +21,9 @@ class ConsoleRunner():
           '''
           TODO:DEV
           '''
-          self.session = User('username', 'kunnuthara',
-                              "email",1000,"MONTHLY",datetime.now())
+          # self.session = User('1', '1',
+          #                     "email",1000,"MONTHLY",datetime(2021,2,2))
+          self.session:User = None
           
           book = Book("Cannon vol1","Joel1", 122,[Book.Genre.ADULT, Book.Genre.ADVENTURE], datetime.now())
           book2 = Book("Joel's Cannon vol2","Joel2", 123,[Book.Genre.COMEDY], datetime.now())
@@ -32,14 +33,15 @@ class ConsoleRunner():
           self.library.add_collection(book2,3)
           self.library.add_collection(book3,5)
           
+          
+          user = User('1','1','email@gmail.com',1000, "MONTHLY", datetime(2021,2,2))
+          self.library.register(user)
+          
           print(self.library.get_books_data())
-          
-          book1_t = self.library.get_book(102)
-          book3_t = self.library.get_book(101)
-          book2_t = self.library.get_book(300)
+
           
           
-          self.session.check_out(book1_t, book2_t, book3_t)
+
           # print(self.session.get_history())
      def start(self):
           self.print_divider(210)
@@ -63,20 +65,20 @@ class ConsoleRunner():
           tprint(f"{title:^130}")
           self.print_divider(200)
           print("Username: ",end="")
-          username = input()
+          username = input().strip()
           print("Password: ",end="")
-          password = input()
+          password = input().strip()
           self.print_divider(200)
           
-          user_auth = self.library.authenticate(username,password)
-          
+          user_auth = self.library.authenticate(username,password)    #user authentication
           #If user obejct is returned, the user exists
           if(user_auth is not None):
-               ''' Dev
-               self.open_index(user_auth)
                self.session = user_auth
-               
-               '''
+               book1_t = self.library.get_book(102)    #TODO:DEV
+               book3_t = self.library.get_book(101)    #TODO:DEV
+               book2_t = self.library.get_book(300)    #TODO:DEV
+               self.session.check_out(book1_t, book2_t, book3_t) #TODO:DEV
+               self.render_index()
           self.render_index()   
           
           # TODO
@@ -89,7 +91,6 @@ class ConsoleRunner():
           inp = ''      
           title = ConsoleRunner.page_titles["index"]
           tprint(f"{title:^130}")
-          
           
           while(True):
                self.print_divider(200)
@@ -109,8 +110,8 @@ class ConsoleRunner():
           option = ''
           
           self.print_divider(200)
-          title = f"|-Welcome-back-{self.session.get_username()}-|"
-          tprint(f"{title}")
+          title = f"| Welcome  back {self.session.get_username()} |"
+          tprint(f"{title:^130}")
           
           while(True):
                self.print_divider(200)
@@ -118,7 +119,7 @@ class ConsoleRunner():
                     "Settings",
                     "History",
                     "Pending Returns",
-                    'Renew Membership',
+                    'Membership',
                     "Go Back",
                     "Logout"
                ])
@@ -136,13 +137,13 @@ class ConsoleRunner():
           elif(option=='3'):
                self.render_pending_returns()
           elif(option=='4'):
-               self.render_payment()
+               self.render_membership()
           elif(option=='5'):
                self.render_index()
      
      def render_history(self):
           history = self.library.get_history_for(self.session)   #[(<Book>, checkedout:str),...]
-          tprint(self.page_titles("history"))
+          tprint(self.page_titles["history"])
           # table for rendering history
           print("-"*162)  
           print(f"|{'No.':<6}|{'Title':<30}|{'Author':<30}|{'Genre':<60}|{'Date and Time' :<30}|")
@@ -163,7 +164,7 @@ class ConsoleRunner():
           self.render_profile()
           
      
-     def render_payment(self):
+     def render_membership(self):
           self.print_divider(115)
           tprint("|Membership-Details|")
           self.print_divider(115)
@@ -171,11 +172,42 @@ class ConsoleRunner():
           print(f"Membership Type: {self.session.get_membership()}")
           if dmy is not None:
                print(f"Membership Exipry: {dmy[0]}-{dmy[1]}-{dmy[2]}")
+               self.render_profile()
+               return
           else:
                print(f"YOUR MEMBERSHIP HAS ALREADY EXPIRED PLEASE RENEW IT.")
-          self.print_divider(115)
+               
+               self.print_divider(115)
+               print("Do you want to renew it?")
+               self.render_options(["YES","NO"])
+               self.print_divider(115)
+               
+               print("Your Choice: ", end='')
+               op = self.listen_input()
+               if(op=='2'):
+                    self.render_profile()
+               elif(op=='1'):
+                    self.render_renewal()
+               return
+          
+                    
+          
         
-        
+     def render_renewal(self):
+          self.print_divider(200)
+          tprint(f"{'RENEW':^130}")
+          self.print_divider(200)
+          print("Select a plan:")
+          
+          options = ["YEARLY","MONTHLY","STUDENT", "GO BACK"]
+          self.render_options(options)
+          
+          op = self.listen_input()
+          if(op=='1' or op=='2' or op=='3'):
+               r = self.library.renew_membership(self.session, options[int(op)-1])
+               print(f"Successfully renewed for {r} membership")     
+          self.render_profile()
+          
      def render_pending_returns(self):
           tprint(f"{'History':^100}")
                     

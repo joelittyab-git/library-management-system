@@ -98,7 +98,9 @@ class User(object):
           
           return (exp.day, exp.month, exp.year)
      
-     
+     def set_renewal(self, type:str,dt:datetime = datetime.now()):
+          self.registered_date = dt
+          self.membership = type
           
      
      
@@ -112,6 +114,12 @@ class User(object):
      
      def get_username(self)->str:
           return self.username
+     
+     def get_password(self)->str:
+          return self.password
+     
+     def get_email(self)->str:
+          return self.email
      
      def get_history(self)->list:
           return self.history

@@ -97,7 +97,14 @@ class Library(object):
                     'published':collection.get_published(),
                     'available':collection.get_published()
                }
-     
+     # A method to searhc for user based on username
+     def get_user(self,username:str):
+          # Linear searches the user list
+          for user in self.registered_users:
+               user:User = user
+               if(user.get_username()==username):
+                    return user
+          return None
      
      # returns a book for specified id
      def get_book(self, id:int)->Book:
