@@ -34,7 +34,7 @@ class User(object):
           if(membership==Membership.MONTHLY_MEMBER or membership==Membership.YEARLY_MEMBER or
              membership==Membership.STUDENT_MEMBER):
                self.membership = membership
-          elif(membership is None):
+          elif(membership is None or membership == Membership.INVALID):
                self.membership = Membership.INVALID
           else:
                raise Exception("InvalidMembershipError")
@@ -101,9 +101,7 @@ class User(object):
      def set_renewal(self, type:str,dt:datetime = datetime.now()):
           self.registered_date = dt
           self.membership = type
-          
-     
-     
+ 
      
      # getters
      def get_membership(self):

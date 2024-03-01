@@ -47,3 +47,17 @@ class LibraryManager(Library):
                user_l.set_renewal(Membership.MONTHLY_MEMBER)
      
           return user_l.get_membership()
+     
+     # checks of the passed username is unique by searching the registered user list
+     def username_is_valid(self, username:str)->bool:
+          # linear searches the registered user list
+          for user in self.registered_users:
+               user:User = user
+               if(user.get_username()==username):
+                    return False
+               
+          return True
+     
+     def create_user_prof(self, username:str, password:str,
+               membership_type:str,email:str):
+          return User(username, password,email,0, membership_type)

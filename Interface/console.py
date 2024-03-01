@@ -3,7 +3,8 @@ import art
 from Management.library import LibraryManager
 from Entity.user import User
 from Entity.book import Book
-import time
+from Entity.user import Membership
+
 #TODO:DEV
 from datetime import datetime
 
@@ -39,10 +40,9 @@ class ConsoleRunner():
           
           print(self.library.get_books_data())
 
-          
-          
-
           # print(self.session.get_history())
+          
+          
      def start(self):
           self.print_divider(210)
           tprint(ConsoleRunner.page_titles["main"])
@@ -82,11 +82,55 @@ class ConsoleRunner():
           self.render_index()   
           
           # TODO
-          
+     # A method to render the registration page  
      def render_register(self):
-          # TODO
-          pass
-     
+          self.print_divider(200)
+          tprint(f"{'Registration':^130}")
+          self.print_divider(200)
+          print("(Enter 'b' to cancel registration)")
+          
+          username = ''
+          password = ''
+          
+          #prompting username and validating it
+          while(True):
+               print("Username: ", end="")
+               username = self.listen_input()
+               if(username.strip()=='b'):
+                    return self.render_login()
+               valid = self.library.username_is_valid(username)
+               if(valid is True):
+                    break
+               print("This username is already taken, please enter another")
+          
+          # prompting password and confirming it
+          while(True):
+               print("Password: ", end="")
+               password = self.listen_input()
+               if(password.strip()=='b'):
+                    return self.render_login()
+               print("Confirm Password: ", end="")
+               c_password = self.listen_input()
+               if(c_password.strip()=='b'):
+                    return self.render_login()
+              
+               if(password == c_password):
+                    break
+               
+          print("Email: ", end="") 
+          
+          email = self.listen_input()
+          if(email.strip()=='b'):return self.render_login()
+          user_r  = self.library.create_user_prof(username, password,
+                    Membership.INVALID,email)     #creating a sample user 
+          self.library.register(user_r)      #registerting the user to the library
+          self.print_divider(200)
+          print("Successfull registration!!")
+          print("To create a membership, navigate Profile > Settings > Membership")
+          self.print_divider(200)
+          return self.render_login()
+          
+     # renders main page
      def render_index(self):
           inp = ''      
           title = ConsoleRunner.page_titles["index"]
@@ -104,8 +148,9 @@ class ConsoleRunner():
                self.print_divider(200)
                print("Invalid Option")
           if(inp=='1'):
-               self.render_profile()
-             
+               return self.render_profile()
+          
+     # A method to render the profile options of the user      
      def render_profile(self):
           option = ''
           
@@ -133,14 +178,16 @@ class ConsoleRunner():
                print("Invalid Option")
           
           if(option=='2'):
-               self.render_history()
+               return self.render_history()
           elif(option=='3'):
-               self.render_pending_returns()
+               return self.render_pending_returns()
           elif(option=='4'):
-               self.render_membership()
+               return self.render_membership()
           elif(option=='5'):
-               self.render_index()
+               return self.render_index()
      
+     
+     # A method to render the history of the user
      def render_history(self):
           history = self.library.get_history_for(self.session)   #[(<Book>, checkedout:str),...]
           tprint(self.page_titles["history"])
@@ -161,9 +208,31 @@ class ConsoleRunner():
                
           print("-"*162)
           
-          self.render_profile()
-          
+          return self.render_profile()
      
+     def render_pending_returns(self):
+          self.print_divider(200)
+          tprint(f"{'Check Outs':^100}")
+          self.print_divider(200)
+          
+          check_outs = self.library.get_checkouts_for(self.session)
+          print("-"*162)
+          print(f"|{'No.':<6}|{'Title':<30}|{'Author':<30}|{'Genre':<60}|{'Date and Time' :<30}|")
+          print("-"*162)
+          
+          for i in range(len(check_outs)):
+               data = check_outs[i]
+               book:Book = data[0]
+               date_time = data[1]
+               print(f"|{i+1:<6}", end="")
+               print(f"|{book.get_title() :<30}", end="")
+               print(f"|{book.get_author() :<30}", end="")
+               print(f"|{str(book.get_genres()) :<60}", end="")
+               print(f"|{date_time:<30}|")
+          print("-"*162)
+          
+          
+     # A method to render the page that displays membership details
      def render_membership(self):
           self.print_divider(115)
           tprint("|Membership-Details|")
@@ -185,9 +254,9 @@ class ConsoleRunner():
                print("Your Choice: ", end='')
                op = self.listen_input()
                if(op=='2'):
-                    self.render_profile()
+                    return self.render_profile()
                elif(op=='1'):
-                    self.render_renewal()
+                    return self.render_renewal()
                return
           
                     
@@ -206,10 +275,9 @@ class ConsoleRunner():
           if(op=='1' or op=='2' or op=='3'):
                r = self.library.renew_membership(self.session, options[int(op)-1])
                print(f"Successfully renewed for {r} membership")     
-          self.render_profile()
+          return self.render_profile()
           
-     def render_pending_returns(self):
-          tprint(f"{'History':^100}")
+          
                     
      #custom function to listen to an input
      def listen_input(self):

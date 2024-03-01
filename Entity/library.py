@@ -149,7 +149,7 @@ class Library(object):
      return a <class 'list'> of tuple [(book, date checked out),...]
      for pending list
      '''
-     def get_pending_returns_for(self, user:User):
+     def get_checkouts_for(self, user:User):
           pending = user.get_checked_out()
           return_list = []
           
