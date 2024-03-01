@@ -64,6 +64,7 @@ class Book(object):
           COMEDY = 'COMEDY'
           HISTORICAL = 'HISTORICAL'
           ROMANCE = 'ROMANCE'
+          DRAMA = 'DRAMA'
           THRILLER = 'THRILLER'
           KIDS = "KIDS"
           HORROR = 'HORROR'
@@ -90,10 +91,13 @@ class Collection(object):
           self.count = count
           self.register_books(book,count)
      
+     #A method to return a book from collection and sets the book unavailable
      def withdraw_book(self)->Book:
           for (book) in self.books:
                book:Book = (book)
-               if(book.is_available()):return book
+               if(book.is_available()):
+                    book.set_unavailable()
+                    return book
           return None    #Returns none if no books are available
      
      # A method to create records of registered books

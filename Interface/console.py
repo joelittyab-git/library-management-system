@@ -29,10 +29,12 @@ class ConsoleRunner():
           book = Book("Cannon vol1","Joel1", 122,[Book.Genre.ADULT, Book.Genre.ADVENTURE], datetime.now())
           book2 = Book("Joel's Cannon vol2","Joel2", 123,[Book.Genre.COMEDY], datetime.now())
           book3 = Book("Joel's Cannon vols 3","Joel3", 124,[Book.Genre.FICTION, Book.Genre.ROMANCE], datetime.now())
+          book4 = Book("1","Joel4", 124,[Book.Genre.HORROR, Book.Genre.HISTORICAL], datetime.now())
           
           self.library.add_collection(book,4)
           self.library.add_collection(book2,3)
           self.library.add_collection(book3,5)
+          self.library.add_collection(book4,1)
           
           
           user = User('1','1','email@gmail.com',1000, "MONTHLY", datetime(2021,2,2))
@@ -134,6 +136,7 @@ class ConsoleRunner():
      def render_index(self):
           inp = ''      
           title = ConsoleRunner.page_titles["index"]
+          self.print_divider(200)
           tprint(f"{title:^130}")
           
           while(True):
@@ -149,6 +152,60 @@ class ConsoleRunner():
                print("Invalid Option")
           if(inp=='1'):
                return self.render_profile()
+          elif(inp=='3'):
+               return self.render_checkout()
+          
+     def render_checkout(self):
+          self.print_divider(190)
+          tprint(f"|{'Check-Out':^130}|")
+          self.print_divider(190)
+          print("(Enter 'b' to go back)")
+          print("Enter a collection id or title: ", end='')
+          inp = self.listen_input()
+          if(inp=='b'):
+               self.render_index()
+          tp = self.library.get_all(inp)
+          print(tp)
+          # if only one book is returned
+          if(tp[0]==True):
+               book:Book = tp[1]
+               
+               print("-"*142)  
+               print(f"|{'Col. No.':^8}|{'Title':^30}|{'Author':^30}|{'Genre':^60}|")
+               print("-"*142)
+               print(f"|{str(book.get_id()):^8}|{book.get_title():^30}|{book.get_author():^30}|{str(book.get_genres()):^60}|")               
+               print("-"*142)
+               print("Confirm:")
+               self.render_options(["YES","NO"])
+               self.print_divider(190)
+               print("Your option: ", end='')
+               op = self.listen_input()
+               self.print_divider(190)
+               if(op=='1'):
+                    bk = self.library.check_out(book, self.session)
+                    self.print_checkout_details(bk)
+
+          # if multiple books are returned
+          elif(tp[0]==False and tp[1] is not None):
+               print("-"*142)  
+               print(f"|{'Col. No.':^8}|{'Title':^30}|{'Author':^30}|{'Genre':^60}|")
+               print("-"*142)  
+               for book in tp[1]:
+                    print(f"|{int(book.get_id()):^8}|{book.get_title():^30}|{book.get_author():^30}|{str(book.get_genres()):^60}|")
+               self.print_divider(190)
+               print("Enter the collection no.: ",end='')
+               number = int(self.listen_input())
+               bk = self.library.check_out(Book("","",number,[]), self.session)
+               self.print_checkout_details(bk)
+          
+          # No book exists
+          else:
+               print("Sorry no book like that exists...")
+          
+               
+          return self.render_checkout()
+               
+               
           
      # A method to render the profile options of the user      
      def render_profile(self):
@@ -210,6 +267,7 @@ class ConsoleRunner():
           
           return self.render_profile()
      
+     # A method to show pending returns
      def render_pending_returns(self):
           self.print_divider(200)
           tprint(f"{'Check Outs':^100}")
@@ -230,6 +288,7 @@ class ConsoleRunner():
                print(f"|{str(book.get_genres()) :<60}", end="")
                print(f"|{date_time:<30}|")
           print("-"*162)
+          return self.render_profile()
           
           
      # A method to render the page that displays membership details
@@ -261,7 +320,7 @@ class ConsoleRunner():
           
                     
           
-        
+     # A page to renew membership
      def render_renewal(self):
           self.print_divider(200)
           tprint(f"{'RENEW':^130}")
@@ -306,3 +365,16 @@ class ConsoleRunner():
           if(not(var>=1 and var<=count)):
                return False
           return True
+     
+     def print_checkout_details(self, bk:Book)->bool:
+          if(bk is not None):
+               print(f"Successfully checked out {bk.get_title()} written by {bk.get_author()}")
+               print("Book Id: ", bk.get_id())
+               print("Title: ", bk.get_title())
+               print("Author: ", bk.get_author())
+               print("Genres: ", bk.get_genres())
+               print("Published Date: ",bk.get_published().date())
+               return True
+          else:
+               print("Sorry but that book is currently unavailable.")
+               return False

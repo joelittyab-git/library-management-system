@@ -106,7 +106,7 @@ class Library(object):
                     return user
           return None
      
-     #A method that returns the book by name 
+     #A method that returns the book by name with the collectio id
      def get_books(self, name:str)->list:
           return_list = []
           
@@ -136,6 +136,15 @@ class Library(object):
                          return book
           return None    #returns None if attempt failed
      
+     # Returns book with collection id from collection_id
+     def get_book_from_collection(self, collection_id:int)->Book:
+          for collection in self.collections:
+               collection:Collection = collection
+               if(collection.get_id()==collection_id):
+                    return Book(collection.get_title(), collection.get_author(),
+                         collection.get_id(),collection.get_genres(),
+                         collection.get_published())
+          return None
      
      # method to return the collection by its id
      def get_collection(self, collection_id:int)->Collection:

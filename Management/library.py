@@ -2,6 +2,7 @@ from Entity.user import User
 from Entity.user import Membership
 from Entity.library import Library
 from Entity.book import Book
+from Entity.book import Collection
 
 class LibraryManager(Library):
      def __init__(self) -> None:
@@ -63,19 +64,18 @@ class LibraryManager(Library):
                membership_type:str,email:str):
           return User(username, password,email,0, membership_type)
      
-     # def check_out(self, entry:str , user: User):
-          
-     #      b_id = None
-     #      b_name = None
-          
-     #      if(entry.isdigit()):
-     #           num = int(entry)
-     #           b_id = self.get_book(num)
-          
-     #      b_name_list = self.get_books(entry)
-          
-     #      if(len(b_name_list)==0 and b_id is not None):
-     #           return super().
+        
+     # A method to check out from collection id
+     def check_out(self, book:Book, user:User)->Book:
+          collection_id = book.get_id()
+          collection = self.get_collection(collection_id)
+          available = collection.get_avaliable()
+          if(available>0):
+               bk = collection.withdraw_book()
+               user.check_out(bk)
+               return bk
+          return None
+               
           
 
      '''
@@ -85,15 +85,16 @@ class LibraryManager(Library):
      >(False, list)
      '''
      def get_all(self, entry:str)->tuple:
-          b_id = None    #Book by id (only 1)
+          b_id = None    #Book by collection id
           b_name = None  #Book by name List
           
           if(entry.isdigit()):
                num = int(entry)
-               b_id = self.get_book(num)
+               b_id = self.get_book_from_collection(num)
                
-          b_name = self.get_books(entry)
-          
+          b_name = self.get_books(entry)     #returns a book object with collection id
+          print("by name:",b_name)
+          print("by id: ",b_id )
           
           if(len(b_name)==0 and (b_id is not None)):
                return (True, b_id)
@@ -101,8 +102,9 @@ class LibraryManager(Library):
                return (True, b_name[0])
           elif(len(b_name)>1 and (b_id is None)):
                return (False, b_name)
-          elif(len(b_name)>1 and (b_id is not None)):
-               return (False, b_name.append(b_id))
+          elif(len(b_name)>=1 and (b_id is not None)):
+               b_name.append(b_id)
+               return (False, b_name)
           else:
                return (False, None)
                
