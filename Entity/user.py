@@ -39,8 +39,6 @@ class User(object):
           else:
                raise Exception("InvalidMembershipError")
           
-          
-          # TODO
           self.transactions = []
           
      #method to add books to the history     
@@ -99,6 +97,7 @@ class User(object):
           return (exp.day, exp.month, exp.year)
      
      def set_renewal(self, type:str,dt:datetime = datetime.now()):
+          self.transactions.append((type, datetime.now()))
           self.registered_date = dt
           self.membership = type
  

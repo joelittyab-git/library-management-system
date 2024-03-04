@@ -3,6 +3,7 @@ from Entity.admin import Admin
 
 class Administration(Library):
      
+     '''A class that implements the high level functionalities of an admin'''
      def __init__(self) -> None:
           super().__init__()
           
