@@ -1,9 +1,8 @@
 from Entity.user import User
 from Entity.user import Membership
-from Entity.library import Library
 from Entity.book import Book
-from Entity.book import Collection
 from Entity.admin import Admin
+
 from Management.admin import Administration
 
 class LibraryManager(Administration):
