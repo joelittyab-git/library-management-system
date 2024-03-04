@@ -40,6 +40,20 @@ class Library(object):
           
           
           return collection_list     
+     
+     def filter_substring(self, substring:str)->list:
+          '''Returns a list of collections that contains the passed substring'''
+          
+          collection_list = []
+          
+          for collection in self.collections:
+               collection:Collection = collection
+               title = collection.get_title()
+               if substring.strip().lower() in title.strip().lower():
+                    collection_list.append(collection)
+                    
+          return collection_list
+          
           
      
      def add_collection(self, book:Book, count:int = 1):

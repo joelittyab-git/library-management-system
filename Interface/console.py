@@ -1,6 +1,6 @@
 from art import tprint
-import art
 from Management.library import LibraryManager
+from Entity.book import Collection
 from Entity.user import User
 from Entity.book import Book
 from Entity.user import Membership
@@ -153,6 +153,8 @@ class ConsoleRunner():
                print("Invalid Option")
           if(inp=='1'):
                return self.render_profile()
+          elif(inp=='2'):
+               return self.render_browse()
           elif(inp=='3'):
                return self.render_checkout()
           elif(inp=='4'):
@@ -239,11 +241,10 @@ class ConsoleRunner():
           while(True):
                self.print_divider(200)
                self.render_options([
-                    "Settings",
+                    "Go Back",
                     "History",
                     "Pending Returns",
                     'Membership',
-                    "Go Back",
                     "Logout"
                ])
                self.print_divider(200)
@@ -254,17 +255,83 @@ class ConsoleRunner():
                if(self.check_option_validity(6,option)):
                     break
                print("Invalid Option")
-          
-          if(option=='2'):
+               
+          if(option=='1'):
+               return self.render_index()
+          elif(option=='2'):
                return self.render_history()
           elif(option=='3'):
                return self.render_pending_returns()
           elif(option=='4'):
                return self.render_membership()
-          elif(option=='5'):
+
+     
+     def render_browse(self):
+          self.print_divider(200)
+          tprint(f"|{'Browse Games':^130}|")
+          self.print_divider(200)
+          
+          print("Search By:")
+          self.render_options(["Genre", "Title"])
+          self.print_divider(200)
+          print("Your Choice: ", end='')
+          op = self.listen_input()
+          self.print_divider(200)
+          
+          if(op=='b'):
                return self.render_index()
-     
-     
+          elif(op=='1'):
+               return self.render_genre_browse()
+          else:
+               return self.render_title_browse()
+          
+     def render_genre_browse(self):
+          print('FICTION\nBIOGRAPHY\nCOMEDY\nHISTORICAL\nROMANCE\nDRAMA\nTHRILLER\nKIDS\nHORROR\nCRIME\nSCIENCE_AND_TECHNOLOGY\nADVENTURE\nSPIRITUAL\nADULT\nMAGAZINE\nTRAVEL\nART')
+          self.print_divider(200)
+          print("Enter your genre type: ", end='')
+          genre = self.listen_input()
+          if(genre=='b'):
+               return self.render_browse()
+          self.print_divider(200)
+          li = self.library.filter_genre(genre)
+          
+          if(len(li)>0) :
+               print("-"*162)  
+               print(f"|{'No.':^6}|{'Title':^30}|{'Author':^30}|{'Genre':^60}|{'Date and Time' :^30}|")
+               print("-"*162)
+               
+               for collection in li:
+                    collection:Collection = collection
+                    print(f"|{collection.get_id():^6}|{collection.get_title():^30}|{collection.get_author():^30}|{str(collection.get_genres()):^60}|{str(collection.get_published()) :^30}|")
+               print("-"*162)
+          else:
+               print("No books with that genre found...")
+          return self.render_browse()
+
+     def render_title_browse(self):
+          self.print_divider(200)
+          print("Enter the title: ", end='')
+          title = self.listen_input()
+          if(title=='b'):
+               return self.render_browse()
+          
+          self.print_divider(200)
+          li = self.library.filter_substring(title)
+          
+          
+          if(len(li)>0):
+               print("-"*162)  
+               print(f"|{'No.':^6}|{'Title':^30}|{'Author':^30}|{'Genre':^60}|{'Date and Time' :^30}|")
+               print("-"*162)
+               for collection in li:
+                    collection:Collection = collection
+                    print(f"|{collection.get_id():^6}|{collection.get_title():^30}|{collection.get_author():^30}|{str(collection.get_genres()):^60}|{str(collection.get_published()) :^30}|")
+               print("-"*162)
+          else:
+               print*"Sorry nothing found..."
+          
+          return self.render_browse()
+          
      # A method to render the history of the user
      def render_history(self):
           history = self.library.get_history_for(self.session)   #[(<Book>, checkedout:str),...]
@@ -325,7 +392,24 @@ class ConsoleRunner():
                     return self.render_renewal()
                return
           
-                    
+     def logout(self):
+          self.print_divider(200)
+          
+          while(True):
+               print("Are you sure you want to logout?")
+               self.render_options(["YES", "NO"])
+               self.print_divider(200)
+               print("Your Choice: ", end='')
+               inp = self.listen_input()
+               self.print_divider(200)
+               
+               if(inp=='1'):
+                    self.session = None
+                    return self.start()
+               elif(inp=='2'):
+                    return self.render_index()
+               else:
+                    print("Enter a valid option")
           
      # A page to renew membership
      def render_renewal(self):

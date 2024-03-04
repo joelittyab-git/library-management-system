@@ -31,5 +31,6 @@ application = ConsoleRunner(LibraryManager())
 # application.check_option_validity(10,"Joe")
 # application.render_register()
 # application.render_checkout()
+# application.render_browse()
 application.start()
 
