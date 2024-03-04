@@ -105,13 +105,16 @@ class ConsoleRunner():
      def render_users(self):
           users = self.library.get_users()
           
+          print("-"*142)
           print(f"|{'User Id':^8}|{'USERNAME':^30}|{'EMAIL':^30}|{'MEMBERSHIP':^40}|{'EXPIRY':^40}")
+          print("-"*142)
           
           for user in users:
                user:User = user
                print(f"|{str(user.get_id()):^8}|{user.get_username():^30}|{user.get_email():^30}|{user.get_membership():^40}|{str(user.get_membership_expiry()):^40}")
+          print("-"*142)
           
-          pass
+          return self.render_admin_page()
                
      def render_add_book(self):
           title = input("Title: ")
@@ -468,6 +471,7 @@ class ConsoleRunner():
                
                if(inp=='1'):
                     self.session = None
+                    print("Successfully logged out!")
                     return self.start()
                elif(inp=='2'):
                     return self.render_index()
@@ -517,7 +521,7 @@ class ConsoleRunner():
      def check_option_validity(self,count:int, input:str):
           try:
                var = int(input)
-          except TypeError as e:
+          except Exception as e:
                return False
           if(not(var>=1 and var<=count)):
                return False
