@@ -110,8 +110,6 @@ class LibraryManager(Library):
                b_id = self.get_book_from_collection(num)
                
           b_name = self.get_books(entry)     #returns a book object with collection id
-          print("by name:",b_name)
-          print("by id: ",b_id )
           
           if(len(b_name)==0 and (b_id is not None)):
                return (True, b_id)

@@ -76,12 +76,13 @@ class ConsoleRunner():
           #If user obejct is returned, the user exists
           if(user_auth is not None):
                self.session = user_auth
-               book1_t = self.library.get_book(102)    #TODO:DEV
-               book3_t = self.library.get_book(101)    #TODO:DEV
-               book2_t = self.library.get_book(300)    #TODO:DEV
-               self.session.check_out(book1_t, book2_t, book3_t) #TODO:DEV
+               # book1_t = self.library.get_book(102)    #TODO:DEV
+               # book3_t = self.library.get_book(101)    #TODO:DEV
+               # book2_t = self.library.get_book(300)    #TODO:DEV
+               # self.session.check_out(book1_t, book2_t, book3_t) #TODO:DEV
                self.render_index()
-          self.render_index()   
+          print("Invalid username or password")
+          return self.start()
           
           # TODO
      # A method to render the registration page  
@@ -154,6 +155,8 @@ class ConsoleRunner():
                return self.render_profile()
           elif(inp=='3'):
                return self.render_checkout()
+          elif(inp=='4'):
+               return self.render_checkin()
           
      def render_checkout(self):
           self.print_divider(190)
@@ -205,26 +208,25 @@ class ConsoleRunner():
                
           return self.render_checkout()
                
-               
-       
      def render_checkin(self):
           # printing the title
           self.print_divider(190)
           tprint(f"|{'Check-In':^130}|")
           self.print_divider(190)
+          print("Enter 'b' to go back...")
           
-          self.print_pending()
-          self.print_divider(130)
-          book_no = self.listen_input()
-          self.print_divider(130)
-          confirm = self.library.check_in(book_no, self.session)
-          if(confirm):
-               print(f"The book with number {book_no} has been successfully returned..")
-          else:
-               print(f"This book does not exists")
-          
-          
-          pass
+          while(True):
+               self.print_pending()
+               self.print_divider(190)
+               book_no = self.listen_input()
+               if(book_no=='b'):return self.render_index()
+               self.print_divider(130)
+               confirm = self.library.check_in(book_no, self.session)
+               
+               if(confirm):
+                    print(f"The book with number {book_no} has been successfully returned..")
+               else:
+                    print(f"This book does not exists")
           
      # A method to render the profile options of the user      
      def render_profile(self):
@@ -328,14 +330,17 @@ class ConsoleRunner():
      # A page to renew membership
      def render_renewal(self):
           self.print_divider(200)
-          tprint(f"{'RENEW':^130}")
+          tprint(f"|{'RENEW':^130}|")
           self.print_divider(200)
           print("Select a plan:")
           
           options = ["YEARLY","MONTHLY","STUDENT", "GO BACK"]
           self.render_options(options)
-          
+          self.print_divider(200)
+          print("Your Choice: ", end="")
           op = self.listen_input()
+          self.print_divider(200)
+          
           if(op=='1' or op=='2' or op=='3'):
                r = self.library.renew_membership(self.session, options[int(op)-1])
                print(f"Successfully renewed for {r} membership")     
@@ -395,7 +400,7 @@ class ConsoleRunner():
                data = check_outs[i]
                book:Book = data[0]
                date_time = data[1]
-               print(f"|{i+1:<6}", end="")
+               print(f"|{book.get_id():<6}", end="")
                print(f"|{book.get_title() :<30}", end="")
                print(f"|{book.get_author() :<30}", end="")
                print(f"|{str(book.get_genres()) :<60}", end="")
