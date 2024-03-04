@@ -93,7 +93,7 @@ class Library(object):
                     user.set_validity(True)
           
      # returns a dictionary containing the data of the books in the library
-     def get_books_data(self)->list:
+     def get_books_data(self)->dict:
           '''returns a dictionary containing the data of the books in the library
           
           Blue print for the dictionary in the list
@@ -114,7 +114,7 @@ class Library(object):
           # traverses the collections list for book data
           for collection in self.collections:
                collection:Collection = (collection)
-               books_r[collection.id] = {
+               books_r[collection.get_id()] = {
                     'book_id':[],
                     'title':collection.get_title(),
                     'genre':collection.get_genres(),
@@ -165,7 +165,7 @@ class Library(object):
                     return user
           return None
      def get_users(self)->list:
-          return self.registered_users()
+          return self.registered_users
      
      #A method that returns the book by name with the collection id
      def get_books(self, name:str)->list:

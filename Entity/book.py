@@ -60,6 +60,7 @@ class Book(object):
      
      class Genre:
           FICTION = 'FICTION'
+          FANTASY = 'FANTASY'
           BIOGRAPHY = 'BIOGRAPHY'
           COMEDY = 'COMEDY'
           HISTORICAL = 'HISTORICAL'
@@ -68,6 +69,7 @@ class Book(object):
           THRILLER = 'THRILLER'
           KIDS = "KIDS"
           HORROR = 'HORROR'
+          ACTION = 'ACTION'
           CRIME = 'CRIME'
           SCIENCE_AND_TECHNOLOGY = 'SCIENCE_AND_TECHNOLOGY'
           ADVENTURE = 'ADVENTURE'

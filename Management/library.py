@@ -112,11 +112,13 @@ class LibraryManager(Administration):
           >True:The book has been checked_out
           >False:The book does not exist in user's checked out list
           '''
+          
+          check_outs = user.get_checked_out()
      
           # A linear search to check if the book exists in the list of checked out books
-          for book in user.get_checked_out():
+          for book in check_outs:
                book:Book = book
-               if(book.get_id()==book_id):
+               if(book["book_id"]==book_id):
                     break
           else:
                return False

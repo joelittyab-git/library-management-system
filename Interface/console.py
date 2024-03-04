@@ -29,7 +29,7 @@ class ConsoleRunner():
           
      def start(self):
           '''
-          The start method of application
+          The start method to the application
           '''
           self.print_divider(210)
           tprint(ConsoleRunner.page_titles["main"])
@@ -85,20 +85,20 @@ class ConsoleRunner():
           elif(op=='2'):
                self.render_users()
           elif(op=='3'):
-               return self.render_index()
+               return self.start()
           
           
      def render_users(self):
           users = self.library.get_users()
           
-          print("-"*142)
-          print(f"|{'User Id':^8}|{'USERNAME':^30}|{'EMAIL':^30}|{'MEMBERSHIP':^40}|{'EXPIRY':^40}")
-          print("-"*142)
+          print("-"*153)
+          print(f"|{'User Id':^8}|{'USERNAME':^30}|{'EMAIL':^30}|{'MEMBERSHIP':^40}|{'EXPIRY':^40}|")
+          print("-"*153)
           
           for user in users:
                user:User = user
-               print(f"|{str(user.get_id()):^8}|{user.get_username():^30}|{user.get_email():^30}|{user.get_membership():^40}|{str(user.get_membership_expiry()):^40}")
-          print("-"*142)
+               print(f"|{str(user.get_id()):^8}|{user.get_username():^30}|{user.get_email():^30}|{user.get_membership():^40}|{str(user.get_membership_expiry()):^40}|")
+          print("-"*153)
           
           return self.render_admin_page()
                
@@ -106,9 +106,9 @@ class ConsoleRunner():
           title = input("Title: ")
           author = input("Author: ")
           while(True):
-               day = input("Day: ")
-               month = input("Month: ")
-               year = input("Year: ")
+               day = int(input("Day: "))
+               month = int(input("Month: "))
+               year = int(input("Year: "))
                try:
                     date = datetime(year, month, day)
                except Exception as e:
@@ -116,7 +116,7 @@ class ConsoleRunner():
                     pass
                else:
                     break
-          copies = input("No. of copies: ")
+          copies = int(input("No. of copies: "))
           print("Enter the genres: (press e to exit the loop)")
           genre_list = []
           while(True):
@@ -127,6 +127,10 @@ class ConsoleRunner():
                                    
           book = Book(title,author,0,genre_list, date)
           self.library.add_collection(book,copies)
+          self.print_divider(236)
+          print("Successfully added the book")
+          self.print_divider(236)
+          self.render_admin_page()
 
      # A method to render the registration page  
      def render_register(self):
@@ -267,10 +271,11 @@ class ConsoleRunner():
           while(True):
                self.print_pending()
                self.print_divider(190)
+               print("Enter the book number: ", end='')
                book_no = self.listen_input()
                if(book_no=='b'):return self.render_index()
                self.print_divider(130)
-               confirm = self.library.check_in(book_no, self.session)
+               confirm = self.library.check_in(int(book_no), self.session)
                
                if(confirm):
                     print(f"The book with number {book_no} has been successfully returned..")
@@ -314,14 +319,14 @@ class ConsoleRunner():
           else:
                return self.logout()
 
-     # A method to render the brose page
+     # A method to render the browse page
      def render_browse(self):
           self.print_divider(200)
           tprint(f"|{'Browse Games':^130}|")
           self.print_divider(200)
           
           print("Search By:")
-          self.render_options(["Genre", "Title"])
+          self.render_options(["Genre", "Title", "All"])
           self.print_divider(200)
           print("Your Choice: ", end='')
           op = self.listen_input()
@@ -331,10 +336,25 @@ class ConsoleRunner():
                return self.render_index()
           elif(op=='1'):
                return self.render_genre_browse()
-          else:
+          elif(op=='2'):
                return self.render_title_browse()
+          else:
+               return self.render_all_books()
           
-     # A method to render the page to brose books by genre 
+     def render_all_books(self):
+          books = self.library.get_books_data()
+          
+          self.print_divider(162)
+          print(f"|{'No.':^6}|{'Title':^30}|{'Author':^30}|{'Genre':^60}|{'Date and Time' :^30}|")
+          self.print_divider(162)
+          
+          for book in books:
+               print(f"|{book:^6}|{books[book]['title']:^30}|{books[book]['author']:^30}|{str(books[book]['genre']):^60}|{str(books[book]['published']) :^30}|")
+          self.print_divider(162)
+          return self.render_browse()
+               
+          
+     # A method to render the page to browse books by genre 
      def render_genre_browse(self):
           print('FICTION\nBIOGRAPHY\nCOMEDY\nHISTORICAL\nROMANCE\nDRAMA\nTHRILLER\nKIDS\nHORROR\nCRIME\nSCIENCE_AND_TECHNOLOGY\nADVENTURE\nSPIRITUAL\nADULT\nMAGAZINE\nTRAVEL\nART')
           self.print_divider(200)

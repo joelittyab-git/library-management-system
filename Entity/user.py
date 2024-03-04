@@ -71,9 +71,10 @@ class User(object):
                for i in range(x):
                     if(self.checked_out[i]["book_id"]==book.id):
                          del self.checked_out[i]  #deletes the book that has been checked in
+                         book.set_availabale()      #sets the book status back to available
                          break
                     
-                    book.set_availabale()      #sets the book status back to available
+                    
      
      #A method to set the validity of a user's membership
      def set_validity(self,is_valid:bool):
