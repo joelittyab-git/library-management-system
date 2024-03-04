@@ -5,7 +5,9 @@ from datetime import datetime
 
 class Library(object):
      
-     '''
+     '''A class that contains all the object required for the library, including users, books and various other instances.
+     Contains methods required to carry out library functionality at the base level
+          
      :<list>:registered_users -> stores the list of registered users
      :<list>:registered_admins -> stores the list of registered admins
      :<list>:collections -> stores the list collections of books
@@ -19,13 +21,42 @@ class Library(object):
      def filter_book(self, name:str):
           books = []
           
+    
+     def filter_genre(self, genre:str)->list:
+          '''
+          Returns a list of collection with the specified genre
+          '''
+          
+          collection_list =[]
+          
+          # attempts a linear search on the collection list and extacts the genre details and tests it with passed values
+          for collection in self.collections:
+               collection:Collection = collection
+               for c_genre in collection.get_genres():
+                    c_genre:str = c_genre
+                    if(genre.upper().strip()==
+                       c_genre.upper().strip()):
+                         collection_list.append(collection)
+          
+          
+          return collection_list     
+          
+     
      def add_collection(self, book:Book, count:int = 1):
+          '''
+          A method to add a collection to the specified library object
+          '''
+          
           collection_id = len(self.collections) + 1
           collection = Collection(book,count,collection_id)
           self.collections.append(collection)
           
-     # validates a user's membership based on the latest registered date
+
      def validate_membership(self,user:User):
+          '''
+          validates a user's membership based on the latest registered date
+          '''
+          
           # extracting date time info of the current instance
           now = datetime.now()          
           dmy = user.get_membership_expiry()
@@ -50,7 +81,9 @@ class Library(object):
           
      # returns a dictionary containing the data of the books in the library
      def get_books_data(self)->list:
-          '''Blue print for the dictionary in the list
+          '''returns a dictionary containing the data of the books in the library
+          
+          Blue print for the dictionary in the list
           {
                '<collection_id>':{
                     book_id:[]
@@ -86,8 +119,19 @@ class Library(object):
                
           return books_r
           
-     # A method to retun a books data
+     # A method to return a books data
      def get_book_data(self,collection_id:int)->dict:
+          '''A method to return a books data
+          
+          Blue print for the dictionary in the list
+          {
+               'title':...,
+               'genre':...,
+               'author':...,
+               'published':...,
+               'available':...
+          }
+          '''
           collection = self.get_collection(collection_id)
           if(collection is None):return None
           return {
@@ -97,8 +141,10 @@ class Library(object):
                     'published':collection.get_published(),
                     'available':collection.get_published()
                }
-     # A method to searhc for user based on username
+     # A method to search for user based on username
      def get_user(self,username:str):
+          '''A method to search for user based on username'''
+          
           # Linear searches the user list
           for user in self.registered_users:
                user:User = user
@@ -106,8 +152,9 @@ class Library(object):
                     return user
           return None
      
-     #A method that returns the book by name with the collectio id
+     #A method that returns the book by name with the collection id
      def get_books(self, name:str)->list:
+          '''A method that returns the book by name with the collection id'''
           return_list = []
           
           for collect in self.collections:
@@ -120,12 +167,11 @@ class Library(object):
                     return_list.append(b)
                     
           return return_list
-                    
-     def get_available(self, name:str)->list:
-          pass
+
      
      # returns a book for specified id
      def get_book(self, id:int)->Book:
+          '''returns a book for specified id'''
           
           # attempts linear search
           for collection in self.collections:
@@ -138,6 +184,8 @@ class Library(object):
      
      # Returns book with collection id from collection_id
      def get_book_from_collection(self, collection_id:int)->Book:
+          '''Returns book with collection id from collection_id'''
+          
           for collection in self.collections:
                collection:Collection = collection
                if(collection.get_id()==collection_id):
@@ -148,6 +196,7 @@ class Library(object):
      
      # method to return the collection by its id
      def get_collection(self, collection_id:int)->Collection:
+          '''method to return the collection by its id'''
           # linear searches the collection by its id
           for col in self.collections:
                col:Collection = (col)
@@ -156,11 +205,13 @@ class Library(object):
                
           return None    #returns none if no collection is found
      
-     '''
-     return a <class 'list'> of tuple [(book, date checked out),...]
-     for history
-     '''
+
      def get_history_for(self, user:User)->list:
+          '''
+          return a <class 'list'> of tuple [(book, date checked out),...]
+          for history
+          '''
+          
           history = user.get_history()
           return_list = []
           
@@ -172,11 +223,13 @@ class Library(object):
                return_list.append((book,check_out))
                
           return return_list
-     '''
-     return a <class 'list'> of tuple [(book, date checked out),...]
-     for pending list
-     '''
+
      def get_checkouts_for(self, user:User):
+          '''
+          return a <class 'list'> of tuple [(book, date checked out),...]
+          for pending list
+          '''
+          
           pending = user.get_checked_out()
           return_list = []
           
@@ -192,11 +245,12 @@ class Library(object):
                
      # Checks out a specific book present in the library
      def check_out(self, book:Book, user:User):
+          '''Checks out a specific book present in the library'''
+          
+          
           book.set_unavailable()
           user.check_out(book)
      
-     def check_out(self, book_id:int, user:User):
-          pass #TODO
      
      #Class to define membership types
      class Membership:

@@ -5,18 +5,23 @@ from Entity.book import Book
 from Entity.book import Collection
 
 class LibraryManager(Library):
+     
+     '''A class that contains functions to carry out library functionality at the top level,
+     extends the Library class'''
      def __init__(self) -> None:
           super().__init__()
           
      # authenticates the user based on username and password credentials
      def authenticate(self,username:str, password:str)->User:
+          '''authenticates the user based on username and password credentials'''
+          
           username_a = None
           
           #Linear searching users in the list of user registered
           for user in self.registered_users:
                user:User = (user)
                if(user.get_username()==username):
-                    print("correct username")
+                    print("Successfully Logged In.")
                     username_a = user.get_username()
                     break
           #The username exists if passed check
@@ -30,6 +35,8 @@ class LibraryManager(Library):
 
      #registers a passed user
      def register(self, user:User):
+          '''registers a passed user'''
+          
           u_id = len(self.registered_users)+1
           register_user = User(user.get_username(), user.get_password(),
                user.get_email(),u_id,user.get_membership(),
@@ -39,6 +46,8 @@ class LibraryManager(Library):
      
      # A method to renew the membership of the user
      def renew_membership(self, user:User, type:str):
+          '''method to renew the membership of the user'''
+          
           user_l = self.get_user(user.username)
           if(type.upper()=="STUDENT"):
                user_l.set_renewal(Membership.STUDENT_MEMBER)
@@ -51,6 +60,7 @@ class LibraryManager(Library):
      
      # checks of the passed username is unique by searching the registered user list
      def username_is_valid(self, username:str)->bool:
+          '''checks of the passed username is unique by searching the registered user list'''
           # linear searches the registered user list
           for user in self.registered_users:
                user:User = user
@@ -62,27 +72,39 @@ class LibraryManager(Library):
      # A method to return a base user
      def create_user_prof(self, username:str, password:str,
                membership_type:str,email:str):
+          '''A method to return a base user'''
           return User(username, password,email,0, membership_type)
      
         
      # A method to check out from collection id
      def check_out(self, book:Book, user:User)->Book:
+          '''
+          returns 
+          ((None, False))-> User membership is invalid
+          ((bk , True))-> Book returned with true membership status
+          ((None, True))-> No book found but membership status is valid
+          '''
+          
           collection_id = book.get_id()
+          if(user.get_membership()==Membership.INVALID):
+               return (None, False)
           collection = self.get_collection(collection_id)
           available = collection.get_avaliable()
           if(available>0):
                bk = collection.withdraw_book()
                user.check_out(bk)
-               return bk
-          return None
+               return (bk , True)
+          return (None, True)
                
-     '''
-     A method to check in the book based on the book id
-     **bool
-     >True:The book has been checked_out
-     >False:The book does not exist in user's checked out list
-     '''
+
      def check_in(self, book_id:int,user:User):
+          '''
+          A method to check in the book based on the book id
+          **bool
+          >True:The book has been checked_out
+          >False:The book does not exist in user's checked out list
+          '''
+     
           # A linear search to check if the book exists in the list of checked out books
           for book in user.get_checked_out():
                book:Book = book
@@ -94,14 +116,16 @@ class LibraryManager(Library):
           user.check_in(self.get_book(book_id))
           return True
           
-
-     '''
-     Returns tuple 
-     **(bool, list or Book)
-     >(True, Book)
-     >(False, list)
-     '''
+          
      def get_all(self, entry:str)->tuple:
+          
+          '''
+          Returns tuple 
+          **(bool, list or Book)
+          >(True, Book)
+          >(False, list)
+          '''
+          
           b_id = None    #Book by collection id
           b_name = None  #Book by name List
           
@@ -123,6 +147,3 @@ class LibraryManager(Library):
           else:
                return (False, None)
                
-     def withdraw_book(self, book:Book):
-          # TODO:Implementations
-          pass

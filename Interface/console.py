@@ -168,7 +168,7 @@ class ConsoleRunner():
           if(inp=='b'):
                self.render_index()
           tp = self.library.get_all(inp)
-          print(tp)
+          self.print_divider(190)
           # if only one book is returned
           if(tp[0]==True):
                book:Book = tp[1]
@@ -377,7 +377,8 @@ class ConsoleRunner():
           return True
      
      def print_checkout_details(self, bk:Book)->bool:
-          if(bk is not None):
+          if(bk[0] is not None):
+               bk:Book = bk[0]
                print(f"Successfully checked out {bk.get_title()} written by {bk.get_author()}")
                print("Book Id: ", bk.get_id())
                print("Title: ", bk.get_title())
@@ -385,9 +386,11 @@ class ConsoleRunner():
                print("Genres: ", bk.get_genres())
                print("Published Date: ",bk.get_published().date())
                return True
-          else:
+          elif(bk[1]==True):
                print("Sorry but that book is currently unavailable.")
                return False
+          else:
+               print("YOU CANNOT CHECKOUT BOOKS SINCE YOUR MEMBERSHIP IS EXPIRED, PLEASE RENEW IT!!")
           
           
      def print_pending(self):
