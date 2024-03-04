@@ -42,7 +42,6 @@ class User(object):
           
           # TODO
           self.transactions = []
-          self.is_valid = True
           
      #method to add books to the history     
      def add_book_to_history(self, book:Book):
@@ -124,6 +123,9 @@ class User(object):
 
      def get_checked_out(self)->list:
           return self.checked_out
+     
+     def get_id(self)->int:
+          return self.id
 
  #Class to define membership types
 class Membership:

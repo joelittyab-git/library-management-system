@@ -32,5 +32,6 @@ application = ConsoleRunner(LibraryManager())
 # application.render_register()
 # application.render_checkout()
 # application.render_browse()
-application.start()
+application.render_admin_page()
+# application.start()
 

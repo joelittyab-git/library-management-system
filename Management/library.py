@@ -3,8 +3,10 @@ from Entity.user import Membership
 from Entity.library import Library
 from Entity.book import Book
 from Entity.book import Collection
+from Entity.admin import Admin
+from Management.admin import Administration
 
-class LibraryManager(Library):
+class LibraryManager(Administration):
      
      '''A class that contains functions to carry out library functionality at the top level,
      extends the Library class'''
@@ -65,6 +67,12 @@ class LibraryManager(Library):
           for user in self.registered_users:
                user:User = user
                if(user.get_username()==username):
+                    return False
+           
+          # linear searches the registered admins  
+          for admin in self.registered_admins:
+               admin:Admin = admin
+               if(admin.get_username()==username) :
                     return False
                
           return True

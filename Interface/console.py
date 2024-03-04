@@ -60,7 +60,7 @@ class ConsoleRunner():
                     break
                elif(option=='2'):
                     self.render_register()
-                    
+     # A method to render the login page             
      def render_login(self):
           self.print_divider(200)
           title = ConsoleRunner.page_titles["login"]
@@ -73,6 +73,7 @@ class ConsoleRunner():
           self.print_divider(200)
           
           user_auth = self.library.authenticate(username,password)    #user authentication
+          admin_auth = self.library.authenticate_admin(username, password)     #admin authentication
           #If user obejct is returned, the user exists
           if(user_auth is not None):
                self.session = user_auth
@@ -80,11 +81,64 @@ class ConsoleRunner():
                # book3_t = self.library.get_book(101)    #TODO:DEV
                # book2_t = self.library.get_book(300)    #TODO:DEV
                # self.session.check_out(book1_t, book2_t, book3_t) #TODO:DEV
-               self.render_index()
+               return self.render_index()
+          elif(admin_auth is not None):
+               self.session = admin_auth
+               return self.render_admin_page() 
           print("Invalid username or password")
           return self.start()
+     
+     def render_admin_page(self):
+          self.print_divider(236)
+          tprint(f"|{'Administration':^160}|")
+          self.print_divider(236)
           
-          # TODO
+          print("Choose an option:")
+          self.render_options(["Add Book", "Show Users", "Go Back"])
+          self.print_divider(236)
+          print("Your Choice: ", end='')
+          op = self.listen_input()
+          self.print_divider(236)
+          if(op=='1'):
+               self.render_add_book()
+          
+     def render_users(self):
+          users = self.library.get_users()
+          
+          print(f"|{'User Id':^8}|{'USERNAME':^30}|{'EMAIL':^30}|{'MEMBERSHIP':^40}|{'EXPIRY':^40}")
+          
+          for user in users:
+               user:User = user
+               print(f"|{str(user.get_id()):^8}|{user.get_username():^30}|{user.get_email():^30}|{user.get_membership():^40}|{str(user.get_membership_expiry()):^40}")
+          
+          pass
+               
+     def render_add_book(self):
+          title = input("Title: ")
+          author = input("Author: ")
+          while(True):
+               day = input("Day: ")
+               month = input("Month: ")
+               year = input("Year: ")
+               try:
+                    date = datetime(year, month, day)
+               except Exception as e:
+                    print("Enter valid date..")
+                    pass
+               else:
+                    break
+          copies = input("No. of copies: ")
+          print("Enter the genres: (press e to exit the loop)")
+          genre_list = []
+          while(True):
+               g = input()
+               if(g=='e'):break
+               val = self.library.valid_genre(g)
+               if(val is not None):genre_list.append(val)
+                                   
+          book = Book(title,author,0,genre_list, date)
+          self.library.add_collection(book,copies)
+
      # A method to render the registration page  
      def render_register(self):
           self.print_divider(200)
@@ -159,7 +213,10 @@ class ConsoleRunner():
                return self.render_checkout()
           elif(inp=='4'):
                return self.render_checkin()
+          else:
+               return self.logout()
           
+     # A method to render the checkout page  
      def render_checkout(self):
           self.print_divider(190)
           tprint(f"|{'Check-Out':^130}|")
@@ -209,7 +266,8 @@ class ConsoleRunner():
           
                
           return self.render_checkout()
-               
+     
+     # A method to render the check in page
      def render_checkin(self):
           # printing the title
           self.print_divider(190)
@@ -264,8 +322,10 @@ class ConsoleRunner():
                return self.render_pending_returns()
           elif(option=='4'):
                return self.render_membership()
+          else:
+               return self.logout()
 
-     
+     # A method to render the brose page
      def render_browse(self):
           self.print_divider(200)
           tprint(f"|{'Browse Games':^130}|")
@@ -285,6 +345,7 @@ class ConsoleRunner():
           else:
                return self.render_title_browse()
           
+     # A method to render the page to brose books by genre 
      def render_genre_browse(self):
           print('FICTION\nBIOGRAPHY\nCOMEDY\nHISTORICAL\nROMANCE\nDRAMA\nTHRILLER\nKIDS\nHORROR\nCRIME\nSCIENCE_AND_TECHNOLOGY\nADVENTURE\nSPIRITUAL\nADULT\nMAGAZINE\nTRAVEL\nART')
           self.print_divider(200)
@@ -308,6 +369,7 @@ class ConsoleRunner():
                print("No books with that genre found...")
           return self.render_browse()
 
+     # A method to render the page to browse books by title
      def render_title_browse(self):
           self.print_divider(200)
           print("Enter the title: ", end='')
@@ -392,6 +454,7 @@ class ConsoleRunner():
                     return self.render_renewal()
                return
           
+     # A method to logout the user
      def logout(self):
           self.print_divider(200)
           
@@ -460,6 +523,7 @@ class ConsoleRunner():
                return False
           return True
      
+     # A method to print the details of the book passed
      def print_checkout_details(self, bk:Book)->bool:
           if(bk[0] is not None):
                bk:Book = bk[0]
@@ -476,7 +540,7 @@ class ConsoleRunner():
           else:
                print("YOU CANNOT CHECKOUT BOOKS SINCE YOUR MEMBERSHIP IS EXPIRED, PLEASE RENEW IT!!")
           
-          
+     # A method to print the pending check outs of the current user in session   
      def print_pending(self):
           check_outs = self.library.get_checkouts_for(self.session)
           print("-"*162)

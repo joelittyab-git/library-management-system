@@ -91,7 +91,6 @@ class Library(object):
                     user.set_validity(False)
                else:
                     user.set_validity(True)
-               
           
      # returns a dictionary containing the data of the books in the library
      def get_books_data(self)->list:
@@ -165,6 +164,8 @@ class Library(object):
                if(user.get_username()==username):
                     return user
           return None
+     def get_users(self)->list:
+          return self.registered_users()
      
      #A method that returns the book by name with the collection id
      def get_books(self, name:str)->list:
@@ -265,6 +266,49 @@ class Library(object):
           book.set_unavailable()
           user.check_out(book)
      
+     
+     # A method that vadates genre and returns it
+     def valid_genre(slef, genre:str):          
+          '''Validates genre and returns it'''
+          
+          gen = genre.strip().upper()
+          
+          if(gen==Book.Genre.FICTION):
+               return Book.Genre.FICTION
+          elif(gen==Book.Genre.BIOGRAPHY):
+               return Book.Genre.BIOGRAPHY
+          elif(gen==Book.Genre.COMEDY):
+               return Book.Genre.COMEDY
+          elif(gen==Book.Genre.HISTORICAL):
+               return Book.Genre.HISTORICAL
+          elif(gen==Book.Genre.ROMANCE):
+               return Book.Genre.ROMANCE
+          elif(gen==Book.Genre.DRAMA):
+               return Book.Genre.DRAMA
+          elif(gen==Book.Genre.THRILLER):
+               return Book.Genre.THRILLER
+          elif(gen==Book.Genre.KIDS):
+               return Book.Genre.KIDS
+          elif(gen==Book.Genre.HORROR):
+               return Book.Genre.HORROR
+          elif(gen==Book.Genre.CRIME):
+               return Book.Genre.CRIME
+          elif(gen==Book.Genre.SCIENCE_AND_TECHNOLOGY):
+               return Book.Genre.SCIENCE_AND_TECHNOLOGY
+          elif(gen==Book.Genre.ADVENTURE):
+               return Book.Genre.ADVENTURE
+          elif(gen==Book.Genre.SPIRITUAL):
+               return Book.Genre.SPIRITUAL
+          elif(gen==Book.Genre.ADULT):
+               return Book.Genre.ADULT
+          elif(gen==Book.Genre.MAGAZINE):
+               return Book.Genre.MAGAZINE
+          elif(gen==Book.Genre.TRAVEL):
+               return Book.Genre.TRAVEL
+          elif(gen==Book.Genre.ART):
+               return Book.Genre.ART
+          
+          return None
      
      #Class to define membership types
      class Membership:
