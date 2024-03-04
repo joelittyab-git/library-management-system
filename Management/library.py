@@ -76,6 +76,23 @@ class LibraryManager(Library):
                return bk
           return None
                
+     '''
+     A method to check in the book based on the book id
+     **bool
+     >True:The book has been checked_out
+     >False:The book does not exist in user's checked out list
+     '''
+     def check_in(self, book_id:int,user:User):
+          # A linear search to check if the book exists in the list of checked out books
+          for book in user.get_checked_out():
+               book:Book = book
+               if(book.get_id()==book_id):
+                    break
+          else:
+               return False
+               
+          user.check_in(self.get_book(book_id))
+          return True
           
 
      '''

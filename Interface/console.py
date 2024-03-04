@@ -206,6 +206,25 @@ class ConsoleRunner():
           return self.render_checkout()
                
                
+       
+     def render_checkin(self):
+          # printing the title
+          self.print_divider(190)
+          tprint(f"|{'Check-In':^130}|")
+          self.print_divider(190)
+          
+          self.print_pending()
+          self.print_divider(130)
+          book_no = self.listen_input()
+          self.print_divider(130)
+          confirm = self.library.check_in(book_no, self.session)
+          if(confirm):
+               print(f"The book with number {book_no} has been successfully returned..")
+          else:
+               print(f"This book does not exists")
+          
+          
+          pass
           
      # A method to render the profile options of the user      
      def render_profile(self):
@@ -273,21 +292,7 @@ class ConsoleRunner():
           tprint(f"{'Check Outs':^100}")
           self.print_divider(200)
           
-          check_outs = self.library.get_checkouts_for(self.session)
-          print("-"*162)
-          print(f"|{'No.':<6}|{'Title':<30}|{'Author':<30}|{'Genre':<60}|{'Date and Time' :<30}|")
-          print("-"*162)
-          
-          for i in range(len(check_outs)):
-               data = check_outs[i]
-               book:Book = data[0]
-               date_time = data[1]
-               print(f"|{i+1:<6}", end="")
-               print(f"|{book.get_title() :<30}", end="")
-               print(f"|{book.get_author() :<30}", end="")
-               print(f"|{str(book.get_genres()) :<60}", end="")
-               print(f"|{date_time:<30}|")
-          print("-"*162)
+          self.print_pending()
           return self.render_profile()
           
           
@@ -378,3 +383,21 @@ class ConsoleRunner():
           else:
                print("Sorry but that book is currently unavailable.")
                return False
+          
+          
+     def print_pending(self):
+          check_outs = self.library.get_checkouts_for(self.session)
+          print("-"*162)
+          print(f"|{'No.':<6}|{'Title':<30}|{'Author':<30}|{'Genre':<60}|{'Date and Time' :<30}|")
+          print("-"*162)
+          
+          for i in range(len(check_outs)):
+               data = check_outs[i]
+               book:Book = data[0]
+               date_time = data[1]
+               print(f"|{i+1:<6}", end="")
+               print(f"|{book.get_title() :<30}", end="")
+               print(f"|{book.get_author() :<30}", end="")
+               print(f"|{str(book.get_genres()) :<60}", end="")
+               print(f"|{date_time:<30}|")
+          print("-"*162)
