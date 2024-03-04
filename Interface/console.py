@@ -4,6 +4,7 @@ from Entity.book import Collection
 from Entity.user import User
 from Entity.book import Book
 from Entity.user import Membership
+from Entity.admin import Admin
 
 #TODO:DEV
 from datetime import datetime
@@ -19,33 +20,17 @@ class ConsoleRunner():
      
      def __init__(self, library:LibraryManager) -> None:
           self.library = library
-          '''
-          TODO:DEV
-          '''
-          # self.session = User('1', '1',
-          #                     "email",1000,"MONTHLY",datetime(2021,2,2))
           self.session:User = None
-          
-          book = Book("Cannon vol1","Joel1", 122,[Book.Genre.ADULT, Book.Genre.ADVENTURE], datetime.now())
-          book2 = Book("Joel's Cannon vol2","Joel2", 123,[Book.Genre.COMEDY], datetime.now())
-          book3 = Book("Joel's Cannon vols 3","Joel3", 124,[Book.Genre.FICTION, Book.Genre.ROMANCE], datetime.now())
-          book4 = Book("1","Joel4", 124,[Book.Genre.HORROR, Book.Genre.HISTORICAL], datetime.now())
-          
-          self.library.add_collection(book,4)
-          self.library.add_collection(book2,3)
-          self.library.add_collection(book3,5)
-          self.library.add_collection(book4,1)
-          
-          
-          user = User('1','1','email@gmail.com',1000, "MONTHLY", datetime(2021,2,2))
-          self.library.register(user)
-          
-          print(self.library.get_books_data())
 
-          # print(self.session.get_history())
+          #default admin
+          admin = Admin("admin", "Admin@123")
+          self.library.register_admin(admin)
           
           
      def start(self):
+          '''
+          The start method of application
+          '''
           self.print_divider(210)
           tprint(ConsoleRunner.page_titles["main"])
           self.print_divider(210)
@@ -77,10 +62,6 @@ class ConsoleRunner():
           #If user obejct is returned, the user exists
           if(user_auth is not None):
                self.session = user_auth
-               # book1_t = self.library.get_book(102)    #TODO:DEV
-               # book3_t = self.library.get_book(101)    #TODO:DEV
-               # book2_t = self.library.get_book(300)    #TODO:DEV
-               # self.session.check_out(book1_t, book2_t, book3_t) #TODO:DEV
                return self.render_index()
           elif(admin_auth is not None):
                self.session = admin_auth
@@ -100,7 +81,12 @@ class ConsoleRunner():
           op = self.listen_input()
           self.print_divider(236)
           if(op=='1'):
-               self.render_add_book()
+               return self.render_add_book()
+          elif(op=='2'):
+               self.render_users()
+          elif(op=='3'):
+               return self.render_index()
+          
           
      def render_users(self):
           users = self.library.get_users()

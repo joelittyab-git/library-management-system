@@ -155,3 +155,7 @@ class LibraryManager(Administration):
           else:
                return (False, None)
                
+               
+     def register_admin(self, admin:Admin):
+          '''A method to register admin'''
+          self.registered_admins.append(admin)
