@@ -22,9 +22,6 @@ class ConsoleRunner():
           self.library = library
           self.session:User = None
 
-          #default admin
-          admin = Admin("admin", "Admin@123")
-          self.library.register_admin(admin)
           
           
      def start(self):
